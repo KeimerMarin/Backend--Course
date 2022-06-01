@@ -1,0 +1,1 @@
+[{"nombre":"productoPrueba","precio":9990,"thumbnail":"https://www.zoominformatica.com/img-datos/AHD301A_0.jpg","id":10}]
