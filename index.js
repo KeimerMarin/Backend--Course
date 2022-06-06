@@ -1,89 +1,62 @@
-const fs = require("fs");
+const express = require('express')
+const fs = require('fs')
+const app = express()
+const puerto = 8080
 
 class Contenedor {
-  constructor(archivo) {
-    this.file = archivo 
-  }
-
-// Metodo Save 
-
-  async save(objeto) {    
-    let data = await fs.promises.readFile(`./${this.file}`, 'utf-8')
-        if(!data) {
-            let id = JSON.parse(await fs.promises.readFile('./identifier.txt', 'utf-8'))
-            let maxID = Math.max(...id)
-            objeto.id = maxID + 1;
-            id = [...id, objeto.id]
-            await fs.promises.writeFile(`./identifier.txt`, JSON.stringify(id));            
-            await fs.promises.writeFile(`./${this.fileName}`, JSON.stringify(objeto))}
-
-            else {
-    let id = JSON.parse(await fs.promises.readFile('./identifier.txt', 'utf-8'))
-    let maxID = Math.max(...id)
-    objeto.id = maxID + 1;
-    id = [...id, objeto.id]
-    await fs.promises.writeFile(`./identifier.txt`, JSON.stringify(id))
-
-    let productos = JSON.parse(
-      await fs.promises.readFile('./products.txt', 'utf-8')
-    );
-
-    productos.push(objeto);
-    await fs.promises.writeFile(`./${this.file}`, JSON.stringify(productos))
-    console.log('Producto agregado con exito ID', objeto.id)
-  }}
-
-// Metodo getById
-
-  async getById(id) {
-    let productos = JSON.parse(
-      await fs.promises.readFile("./products.txt", "utf-8")
-    );
-    let objeto = productos.find((prod) => prod.id == id)
-    console.log(objeto ? objeto : "ID no encontrado")
-  }
-
-// Metodo getAll
-
-  async getAll() {
-    let productos = JSON.parse(
-      await fs.promises.readFile("./products.txt", "utf-8")
-    );
-    console.log(productos);
-  }
-
-// Metodo deleteById
-
-  async deleteById(id) {
-    let productos = JSON.parse(
-      await fs.promises.readFile("./products.txt", "utf-8")
-    );
-    if (productos.some((prod) => prod.id == id)) {
-      let newProductos = productos.filter((prod) => prod.id != id)
-      await fs.promises.writeFile(
-        `./${this.file}`,
-        JSON.stringify(newProductos)
-      );
-      console.log('producto eliminado correctamente')
-    } else {
-      console.log('no existe producto asociado al id')
+    constructor(archivo){
+        this.file = archivo
     }
-  }
+    async getAll() {
+        try {
+            return JSON.parse(
+            await fs.promises.readFile(`./${this.file}`, "utf-8")
+            );
+        } catch (error) {
+            console.log('Error al ejecutar el metodo', error);
+        }
+        }
+    }
 
-//Metodo deteleAll
+app.get('/', (req, res) => {
+    res.send(
+    ` <h1>El servidor se inicio correctamente</h1> `
+    )
+} )
 
-  async deleteAll() {
+app.get('/productos', async (req, res) => {
+    let productos = await new Contenedor ('productos.txt').getAll ()
+    res.send (`<div style='
+    display: flex;
+    align-items: center;
+    justify-content: center;'> 
+    ${productos.map(prod => {
+        let cardProduct = `<div style= 'text-align: center;'><img src='${prod.thumbnail}' style='
+        width: 200px;
+        height: 200px;'/>
+        <h4>${prod.title} <h4>Precio: $ ${prod.price}</div>`
+        return cardProduct
+    })}
+    </div>`)
+})
+app.get('/productoRandom', async (req, res) => {
+    let productos = await new Contenedor('productos.txt').getAll()
+    let random =Math.floor( Math.random() * productos.length);
+    res.send(`<div style='
+    display: flex;
+    align-items: center;
+    flex-direction: column;'>
+    <img src='${productos[random].thumbnail}' style='width: 200px; height: 200px;'/>
+    <h4>${productos[random].title}</h4>
+    Precio:$ ${productos[random].price}
+    </div>`
+    )
+} )
+
+app.listen(puerto, () => {
     try {
-    await fs.promises.writeFile(`./${this.file}`, '[]')
-    console.log('Se han eliminado todos los productos')
-    }catch(error) {
-        console.log(error)
+    console.log(`El servidor se inicio en el puerto ${puerto}`)
+    }catch(err) {
+        console.log('Error al iniciar el servidor',err)
     }
-  }
-}
-
-const arrayProducto = new Contenedor('products.txt').save({nombre: 'productoPrueba', precio: 9990, thumbnail: 'https://www.zoominformatica.com/img-datos/AHD301A_0.jpg'})
-// new Contenedor('products.txt').getById(8)
-// new Contenedor('products.txt').getAll()
-// new Contenedor('products.txt').deleteById(12) 
-// new Contenedor('products.txt').deleteAll()
+})
