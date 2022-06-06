@@ -1,35 +1,62 @@
-class Usuario{
-    constructor(nombreUsuario, apellidoUsuario, mascota, libros){
-        this.nombreUsuario = nombreUsuario
-        this.apellidoUsuario = apellidoUsuario
-        this.mascota= [];
-        this.libros = []
-        
-    }
-    getFullName ()  {
-        return `${this.nombreUsuario} ${this.apellidoUsuario}`     
-    }   
-    addMascota () { 
-        this.mascota.push('perro', 'gato', 'loro')
+const express = require('express')
+const fs = require('fs')
+const app = express()
+const puerto = 8080
 
+class Contenedor {
+    constructor(archivo){
+        this.file = archivo
     }
-    countMascota () {
-        return `${this.mascota.length}`  
+    async getAll() {
+        try {
+            return JSON.parse(
+            await fs.promises.readFile(`./${this.file}`, "utf-8")
+            );
+        } catch (error) {
+            console.log('Error al ejecutar el metodo', error);
+        }
+        }
     }
-    addBook () {
-        this.libros.push({nombre: 'EL principe azul', autor: 'Desconocido'}, {nombre: 'el principe rojo', autor: 'Sin Nombre'})
-    }
-    getBookNames () {
-        return this.libros.map(item => item.nombre);
-    }
-}
 
-const persona1 = new Usuario("Keimer", "Marin")
+app.get('/', (req, res) => {
+    res.send(
+    ` <h1>El servidor se inicio correctamente</h1> `
+    )
+} )
 
-console.log(persona1)
-console.log (persona1.getFullName())
-console.log(persona1.addMascota())
-console.log(persona1.countMascota())
-console.log(persona1.addBook())
-console.log(persona1) 
-console.log(persona1.getBookNames())
+app.get('/productos', async (req, res) => {
+    let productos = await new Contenedor ('productos.txt').getAll ()
+    res.send (`<div style='
+    display: flex;
+    align-items: center;
+    justify-content: center;'> 
+    ${productos.map(prod => {
+        let cardProduct = `<div style= 'text-align: center;'><img src='${prod.thumbnail}' style='
+        width: 200px;
+        height: 200px;'/>
+        <h4>${prod.title} <h4>Precio: $ ${prod.price}</div>`
+        return cardProduct
+    })}
+    </div>`)
+})
+app.get('/productoRandom', async (req, res) => {
+    let productos = await new Contenedor('productos.txt').getAll()
+    let random =Math.floor( Math.random() * productos.length);
+    res.send(`<div style='
+    display: flex;
+    align-items: center;
+    flex-direction: column;'>
+    <img src='${productos[random].thumbnail}' style='width: 200px; height: 200px;'/>
+    <h4>${productos[random].title}</h4>
+    Precio:$ ${productos[random].price}
+    </div>`
+    )
+} )
+
+app.listen(puerto, () => {
+    try {
+    console.log(`El servidor se inicio en el puerto ${puerto}`)
+    }catch(err) {
+        console.log('Error al iniciar el servidor',err)
+    }
+})
