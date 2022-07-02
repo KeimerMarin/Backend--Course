@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: arial;
+    background-image: url('./bg.png');
+}
+
+/* Style Form */
+.form-login {
+    width: 400px;
+    background: #4e4d4d;
+    margin: auto;
+    margin-top: 20px;
+    box-shadow: 7px 13px 37px #000;
+    padding: 20px 30px;
+    border-top: 4px solid #017bab;
+    color: white;
+}
+
+.form-login h5 {
+    margin: 0;
+    text-align: center;
+    height: 40px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid;
+    font-size: 20px;
+}
+
+.controls {
+    width: 100%;
+    border: 1px solid #017bab;
+    margin-bottom: 15px;
+    padding: 11px 10px;
+    background: #252323;
+    font-size: 14px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+.buttons {
+    width: 100%;
+    height: 40px;
+    background: #017bab;
+    border: none;
+    color: white;
+    margin-bottom: 16px;
+}
+
+/* Style list product */
+#productPool{
+    display: grid;
+    grid-template-columns: repeat(6, 30vh);
+    gap: 10px;
+    margin: auto;
+    margin: 40px;
+}
+.cardProduct{
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    border-color: #7a7a7a;
+    border-radius: 10px;
+    text-align: center;
+}
+.cardProduct h3{
+    font-size: 1.5rem;
+    color:rgb(255, 255, 255)
+}
+.cardProduct p{
+    color: rgb(255, 255, 255);
+}
+
+.cardProduct img {
+    max-width: 160px;
+}
+/* Style Chat */
+#chatWindow {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    background-color: #949494;
+    width: 100%;
+    height: 300px;
+}
+#msgPool {
+    background-color: rgb(255, 255, 255);
+    height: 60%;
+    margin: 20px 20px 40px 20px;
+    overflow: scroll;
+}
+
+#formMsj {
+    display: flex;
+    flex-direction: row;
+    justify-self: flex-end;
+    align-self: center;
+    border-radius: 50px;
+}
+
+#formMsj * {
+    height: 50px;
+    margin: 2px;
+}
+#mailInput{
+    border-radius: 8px;
+}
+#msjInput{
+    border-radius: 8px;
+}
+.nick {
+    color: blue;
+    font-weight: bold;
+}
+
+.dateText {
+    color: brown;
+}
+
+.msgText {
+    color: rgb(6, 141, 67);
+    font-style: italic;
+}
+
+#typingPool {
+    color: aqua;
+}
